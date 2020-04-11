@@ -1,6 +1,22 @@
 [
-	{"name": "Long Beak Bird", "icon": "resources/tag_examples/long_beak.jpg"},
-	{"name": "Eagle", "icon": "resources/tag_examples/eagle.jpg"},
-	{"name": "Parrot", "icon": "resources/tag_examples/parrot.jpg"},	
-	{"name": "Baby Bird", "icon": "resources/tag_examples/baby_bird.jpg"}
+    {"name": "aeroplane", "icon": "resources/tag_examples/none.jpg"},
+    {"name": "bicycle", "icon": "resources/tag_examples/none.jpg"},
+    {"name": "bird", "icon": "resources/tag_examples/none.jpg"},
+    {"name": "boat", "icon": "resources/tag_examples/none.jpg"},
+    {"name": "bottle", "icon": "resources/tag_examples/none.jpg"},
+    {"name": "bus", "icon": "resources/tag_examples/none.jpg"},
+    {"name": "car", "icon": "resources/tag_examples/none.jpg"},
+    {"name": "cat", "icon": "resources/tag_examples/none.jpg"},
+    {"name": "chair", "icon": "resources/tag_examples/none.jpg"},
+    {"name": "cow", "icon": "resources/tag_examples/none.jpg"},
+    {"name": "diningtable", "icon": "resources/tag_examples/none.jpg"},
+    {"name": "dog", "icon": "resources/tag_examples/none.jpg"},
+    {"name": "horse", "icon": "resources/tag_examples/none.jpg"},
+    {"name": "motorbike", "icon": "resources/tag_examples/none.jpg"},
+    {"name": "person", "icon": "resources/tag_examples/none.jpg"},
+    {"name": "pottedplant", "icon": "resources/tag_examples/none.jpg"},
+    {"name": "sheep", "icon": "resources/tag_examples/none.jpg"},
+    {"name": "sofa", "icon": "resources/tag_examples/none.jpg"},
+    {"name": "train", "icon": "resources/tag_examples/none.jpg"},
+    {"name": "tvmonitor", "icon": "resources/tag_examples/none.jpg"}
 ]

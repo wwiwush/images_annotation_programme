@@ -20,28 +20,28 @@ $annotations = $obj->{'annotations'};
 file_put_contents($file, "Annotations = ".sizeof($annotations)."\n",FILE_APPEND | LOCK_EX);
 
 $imageSize = [  "width"  => $width ,
-				"height" => $height,
-				"depth"  => 3 ];			
-			
+    "height" => $height,
+    "depth"  => 3 ];
+
 $xml = new xmlVocAnnotations($folder, $id, $imageSize);
 
 file_put_contents($file, "xmlVocAnnotations created\n",FILE_APPEND | LOCK_EX);
 
 foreach ($annotations as &$annotation)
-{						
-	$xml->addBndBox($annotation->x,
-					$annotation->y,
-					$annotation->width,
-					$annotation->height,
-					$annotation->tag);
+{
+    $xml->addBndBox($annotation->x,
+        $annotation->y,
+        $annotation->width,
+        $annotation->height,
+        $annotation->tag);
 }
 
 file_put_contents($file, "Before saving\n",FILE_APPEND | LOCK_EX);
 // Write xml to file
 $xml->save($ANNOTATIONS_DIR);
 
-$response_array['status']  = 'success'; /* match error string in jquery if/else */ 
-$response_array['message'] = $id.".xml has been created.";   /* add custom message */ 
+$response_array['status']  = 'success'; /* match error string in jquery if/else */
+$response_array['message'] = $id.".xml has been created.";   /* add custom message */
 
 file_put_contents($file, "End of file validationTagsAndRegions" ,FILE_APPEND | LOCK_EX);
 file_put_contents($file, " " ,FILE_APPEND | LOCK_EX);
