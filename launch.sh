@@ -8,14 +8,14 @@ fi
 dpkg -s php &> /dev/null
 if [ $? -ne 0 ]; then
     echo "Will install php"
-    apt update && apt install php
+    apt update && apt install php -y
 fi
 
 #check php-xml installation
 dpkg -s php-xml &> /dev/null
 if [ $? -ne 0 ]; then
     echo "Will install php-xml"
-    apt update && apt install php-xml
+    apt update && apt install php-xml -y
 fi
 
 PORT=$1
