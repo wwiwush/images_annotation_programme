@@ -10,22 +10,22 @@ Discover an example: http://bipbipavertisseur.alwaysdata.net/image_annotations_v
 To customize the directories used, edit the PHP file **inc/configuration.php**
 ```php
 <?php
-# Image path to be used in the HTML client
-$IMAGE_WEB_DIR = "data/images";
+# dataset root path to be used in the HTML client
+$DATASET_ROOT_WEB_DIR = "data/";
 
-# Image path for internal PHP use
-$IMAGE_ROOT_DIR  = "../data/images";
-$ANNOTATIONS_DIR = "../data/annotations";
+# Image & annotation path for internal PHP use
+$IMAGES_DIR  = "../data/VOC2007/JPEGImages";
+$ANNOTATIONS_DIR = "../data/VOC2007/Annotations";
 
-# Collection name 
-$COLLECTION_NAME = "collection_01";
+# Collection name
+#$COLLECTION_NAME = "collection_01";
 
 # Not annotated image 80% to be presented to user
-$ratio_new_old = 80;
+#$ratio_new_old = 80;
 ?>
 ```
 ### 2. Images
-Images to be annotated are located in **data/images/collection_01/part_1** and **data/images/collection_01/part_2**
+Images to be annotated are located in **data/VOC2007/JPEGImages**
 
 ### 3. List of classes
 
@@ -34,15 +34,15 @@ The list of classes can be customized in the file **resources/list_of_tags.json*
 [
 	{"name": "Long Beak Bird", "icon": "resources/tag_examples/long_beak.jpg"},
 	{"name": "Eagle", "icon": "resources/tag_examples/eagle.jpg"},
-	{"name": "Parrot", "icon": "resources/tag_examples/parrot.jpg"},	
+	{"name": "Parrot", "icon": "resources/tag_examples/parrot.jpg"},
 	{"name": "Baby Bird", "icon": "resources/tag_examples/baby_bird.jpg"}
 ]
 ```
 The result is quite cool !<br />
 ![Screen Shot](http://bipbipavertisseur.alwaysdata.net/example/images/list_species.jpg)
 
-### 4. Annotations Target directory 
-Each image will generate one XML file in the directory **data/annotations**
+### 4. Annotations Target directory
+Each image will generate one XML file in the directory **data/VOC2007/Annotations**
 
 ## Output as Pascal VOC xml files
 
@@ -51,7 +51,7 @@ This format is a standard and can be easily read from [Tensorflow Object Detecti
 ```xml
 <?xml version="1.0"?>
 <annotation>
-  <folder>collection_01/part_1</folder>
+  <folder>JPEGImages</folder>
   <filename>pexels-photo-60091.jpg</filename>
   <path/>
   <source>

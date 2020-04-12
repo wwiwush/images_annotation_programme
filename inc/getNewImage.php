@@ -24,7 +24,7 @@ function getXmlFile($dir, $filename)
     return $xml_filepath;
 }
 
-$it = new RecursiveDirectoryIterator($IMAGE_ROOT_DIR);
+$it = new RecursiveDirectoryIterator($IMAGES_DIR);
 
 # List of images to process
 $list_of_images = array();
@@ -49,13 +49,13 @@ foreach(new RecursiveIteratorIterator($it) as $file)
         $delimiter = "/";
         $item = explode($delimiter, $file);
         $nbItems = count($item);
-        # Should be A/C type / MSN / Image name
+        # Should be like "VOC2007/JPEGImages/000001.jpg"
         if ($nbItems>=3)
         {
             $image_name = $item[$nbItems-1];
-            $msn = $item[$nbItems-2];
-            $type = $item[$nbItems-3];
-            $image_info = array("type" => $type, "msn" => $msn,
+            $folder = $item[$nbItems-2];
+            $year = $item[$nbItems-3];
+            $image_info = array("year" => $year, "folder" => $folder,
                 "name" => $image_name);
 
             # Add the image in the list
@@ -88,13 +88,13 @@ file_put_contents($file, "INFO - getNewImage.php\n");
 /*echo "Annotated images:<br>";
 foreach( $list_of_annotated_images as $image_info )
 {
-    echo $image_info["type"] . "/" . $image_info["msn"] . "/" . $image_info["name"] . "<br>";
+    echo $image_info["year"] . "/" . $image_info["folder"] . "/" . $image_info["name"] . "<br>";
 }
 
 echo "<br>All images:<br>";
 foreach( $list_of_images as $image_info )
 {
-    echo $image_info["type"] . "/" . $image_info["msn"] . "/" . $image_info["name"] . "<br>";
+    echo $image_info["year"] . "/" . $image_info["folder"] . "/" . $image_info["name"] . "<br>";
 }
 
 echo "Number of images :" . count($list_of_images) ."<br>";
@@ -135,7 +135,7 @@ else
 $random_index = rand(0, count($list_of_images)-1);
 $image_info = $list_of_images[$random_index];
 
-$url = $IMAGE_WEB_DIR."/".$image_info["type"] . "/" . $image_info["msn"] . "/" . $image_info["name"];
+$url = $DATASET_ROOT_WEB_DIR."/".$image_info["year"] . "/" . $image_info["folder"] . "/" . $image_info["name"];
 
 # Remove extension
 $id = str_replace(array(".jpg",".JPG"),".jpg", $image_info["name"]);
@@ -180,7 +180,7 @@ file_put_contents($file, "Annotations ".serialize($annotations)."\n",FILE_APPEND
 file_put_contents($file, "URL image = ".$url."\n",FILE_APPEND | LOCK_EX);
 
 # Prepare message to send
-$data = array ("url" => $url, "id" => $id, "folder" => $image_info["type"] . "/" . $image_info["msn"],
+$data = array ("url" => $url, "id" => $id, "year" => $image_info["year"], "folder" => $image_info["folder"],
     "annotations" => $annotations);
 
 file_put_contents($file, "Annotations ".serialize($data)."\n",FILE_APPEND | LOCK_EX);

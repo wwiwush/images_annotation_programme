@@ -50,8 +50,10 @@ class xmlVocAnnotations
         $filename = $this->_domDoc->createElement('filename',$this->_filename);
         $filenameNode = $topNode->appendChild($filename);
 
-        $localImgPath = $this->_domDoc->createElement('path',$this->_localImgPath);
-        $localImgPathNode = $topNode->appendChild($localImgPath);
+        if ($this->_localImgPath != null) {
+            $localImgPath = $this->_domDoc->createElement('path',$this->_localImgPath);
+            $localImgPathNode = $topNode->appendChild($localImgPath);
+        }
 
         $source = $this->_domDoc->createElement('source');
         $sourceNode = $topNode->appendChild($source);
@@ -59,7 +61,7 @@ class xmlVocAnnotations
         $database = $this->_domDoc->createElement('database',$this->_databaseSrc);
         $sourceNode->appendChild($database);
 
-        $size_part = $this->_domDoc->createElement('size_part');
+        $size_part = $this->_domDoc->createElement('size');
         $size_partNode = $topNode->appendChild($size_part);
 
         $width  = $this->_domDoc->createElement('width',  strval($this->_imgSize['width']));
@@ -152,8 +154,8 @@ $height = $obj->{'height'};
 $annotations = json_decode($obj->{'annotations'},true);
 
 $imageSize = [  "width"  => $width ,
-				"height" => $height,
-				"depth"  => 3 ];
+                "height" => $height,
+                "depth"  => 3 ];
 $xml = new xmlVocAnnotations($folder, $id, $imageSize);
 
 foreach ($annotations as &$annotation)

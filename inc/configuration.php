@@ -1,10 +1,10 @@
 <?php
 
-# Image path to be used in the HTML client
-$IMAGE_WEB_DIR = "data/";
+# dataset root path to be used in the HTML client
+$DATASET_ROOT_WEB_DIR = "data/";
 
-# Image path for internal PHP use
-$IMAGE_ROOT_DIR  = "../data/VOC2007/JPEGImages";
+# Image & annotation path for internal PHP use
+$IMAGES_DIR  = "../data/VOC2007/JPEGImages";
 $ANNOTATIONS_DIR = "../data/VOC2007/Annotations";
 
 # Collection name
