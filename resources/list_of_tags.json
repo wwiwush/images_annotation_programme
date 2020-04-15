@@ -1,6 +1,6 @@
 [
     {"name": "aeroplane", "icon": "resources/tag_examples/none.jpg"},
-    {"name": "bicycle", "icon": "resources/tag_examples/none.jpg"},
+    {"name": "bicycle", "icon": "resources/tag_examples/bicycle.jpeg"},
     {"name": "bird", "icon": "resources/tag_examples/none.jpg"},
     {"name": "boat", "icon": "resources/tag_examples/none.jpg"},
     {"name": "bottle", "icon": "resources/tag_examples/none.jpg"},

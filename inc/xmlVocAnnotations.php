@@ -79,10 +79,12 @@ class xmlVocAnnotations
     }
 
     # Tag is $name
-    public function addBndBox($xmin, $ymin, $width, $height, $name)
+    public function addBndBox($xmin, $ymin, $width, $height, $name, $difficult, $groupof)
     {
         $bndbox = ['xmin'=>$xmin, 'ymin'=>$ymin, 'xmax'=>($xmin+$width), 'ymax'=>($ymin+$height)];
         $bndbox['name'] = $name;
+        $bndbox['difficult'] = $difficult;
+        $bndbox['groupof'] = $groupof;
         array_push($this->_boxlist, $bndbox);
     }
 
@@ -102,7 +104,10 @@ class xmlVocAnnotations
             $truncated = $this->_domDoc->createElement('truncated',  "0");
             $object_itemNode->appendChild($truncated);
 
-            $difficult = $this->_domDoc->createElement('difficult',  "0");
+            $group_of = $this->_domDoc->createElement('group_of',  $box["groupof"]);
+            $object_itemNode->appendChild($group_of);
+
+            $difficult = $this->_domDoc->createElement('difficult',  $box["difficult"]);
             $object_itemNode->appendChild($difficult);
 
             $bndbox = $this->_domDoc->createElement('bndbox');

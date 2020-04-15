@@ -33,7 +33,9 @@ foreach ($annotations as &$annotation)
         $annotation->y,
         $annotation->width,
         $annotation->height,
-        $annotation->tag);
+        $annotation->tag,
+        $annotation->difficult,
+        $annotation->groupof);
 }
 
 file_put_contents($file, "Before saving\n",FILE_APPEND | LOCK_EX);
