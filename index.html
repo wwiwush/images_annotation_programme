@@ -680,8 +680,14 @@ function validateTagsAndRegions()
         tag_info.y = area.y * ratioY;
         tag_info.width = area.width * ratioX;
         tag_info.height = area.height * ratioY;
-        tag_info.difficult = parseInt(tagSerial[1]);
-        tag_info.groupof = parseInt(tagSerial[2]);
+        if(tagSerial[1] == "easy")
+            tag_info.difficult = 0;
+        else
+            tag_info.difficult = 1;
+        if(tagSerial[2] == "nogroup")
+            tag_info.groupof = 0;
+        else
+            tag_info.groupof = 1;
         // To be checked
         tmp_annotations.push(tag_info);
         // image_info.annotations[index_tag] = tag_info;
@@ -853,8 +859,10 @@ function getAllInfo()
     {
         imageIndex = parseInt(image_index);
     }
+    selectedIndex = imageIndex;
     var dataString = JSON.stringify(user_id);
     console.log("INFO: " + "getAllInfo() from php");
+
     $.ajax({
         type: 'POST',
         url: 'inc/getAllInfo.php',
