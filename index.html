@@ -409,10 +409,13 @@ $(document).ready(function ()
             $("#tag_input").val("");
             $('#tag_input').css({'color':'#000'});
         }
+        bypassTagCheck=false;
     });
 
     $("#tag_input").focusout(function() {
-        isTagInAuthorizedList()
+        var tagStautus = isTagInAuthorizedList();
+        if(tagStautus)
+            bypassTagCheck=true;
     });
 
     $("#tag_input").on('keyup', function (e) {
@@ -443,7 +446,8 @@ function setValidInputTag(_tag)
     else
         $("#ingroup").prop('checked', true);
     isTagInAuthorizedList();
-    bypassTagCheck=true;
+    // if(tagStatus)
+    //     bypassTagCheck=true;
 }
 
 function setNotYetValidInputTag(_tag)
@@ -457,7 +461,7 @@ function isTagInAuthorizedList()
     var region_tag = $("#tag_input").val();
     
     list_of_tags = $("#tag_input").getAllItemData();
-    console.log(list_of_tags);
+    //console.log(list_of_tags);
     if (list_of_tags.indexOf(region_tag) >= 0)
     {
         $('#tag_input').css({'color':'#14AEE1'});
@@ -516,6 +520,7 @@ function onAreaChanged(event, id, areas)
     {
         setValidInputTag(area.tag);
         region_tag_length = stored_tag.length;
+        bypassTagCheck=true;
     }
     else
     {
