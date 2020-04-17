@@ -75,7 +75,7 @@ function selectImage(item, ind)
     image_info.year = list_of_images[ind].year;
     image_info.folder = list_of_images[ind].folder;
     selectedIndex = ind;
-    setImageIndexCookie(ind);
+    setImageCookie(list_of_images[ind].id);
     $('#image_to_process').attr("src", list_of_images[ind].url);
 }
 
@@ -665,11 +665,11 @@ function validateTagsAndRegions()
     // Process the list of tags
     var areas = $('#image_to_process').selectAreas('areas');
 
-    if (areas.length == 0)
-    {
-        setStatusAndColor("Create at least one region with a tag before submitting.", RED_COLOR);
-        return false;
-    }
+    // if (areas.length == 0)
+    // {
+    //     setStatusAndColor("Create at least one region with a tag before submitting.", RED_COLOR);
+    //     return false;
+    // }
 
     index_tag = 0;
     ratioX = lastLoadedWidth/$('#image_to_process').width();
@@ -774,13 +774,22 @@ function getCookie(cname)
     return "";
 }
 
-function setImageIndexCookie(ind)
+function deleteImageCookie()
+{
+    var exp = new Date();
+    exp.setTime(exp.getTime() - 1);
+    var cval=getCookie("image");
+    if(cval!=null)
+        document.cookie = "image="+cval+";expires="+exp.toUTCString()+ ";path=/";
+}
+
+function setImageCookie(imageName)
 {
     // Create a cookie to identify image index
     var date = new Date();
     date.setTime(date.getTime() + (10*24*60*60*1000)); // ms
     expires = "; expires=" + date.toUTCString();
-    document.cookie = "image_index="+ ind + expires + "; path=/";
+    document.cookie = "image="+ imageName + expires + ";path=/";
 }
 
 function getOrCreateUserId()
@@ -859,10 +868,11 @@ function sortById(x, y)
 function getAllInfo()
 {
     imageIndex = 0;
-    image_index = getCookie("image_index");
-    if (image_index != "")
+    image = "";
+    imageName = getCookie("image");
+    if (imageName)
     {
-        imageIndex = parseInt(image_index);
+        image = imageName;
     }
     selectedIndex = imageIndex;
     var dataString = JSON.stringify(user_id);
@@ -876,6 +886,21 @@ function getAllInfo()
         success: function(resD)
         {
             list_of_images = resD.sort(sortById);
+            flag=false;
+            if(image)
+            {
+                list_of_images.forEach(function(element,index)
+                {
+                    if(element.id==image)
+                    {
+                        imageIndex=index;
+                        flag=true;
+                        return false;
+                    }
+                });
+            }
+            if(!flag)
+                setImageCookie(list_of_images[imageIndex].id);
             image_info.url = list_of_images[imageIndex].url;
             image_info.year = list_of_images[imageIndex].year;
             image_info.folder = list_of_images[imageIndex].folder;
@@ -1011,7 +1036,7 @@ function getAllInfo()
                     </div> -->
 
                     <div style="padding-top:24px;box-sizing: border-box;width=100%;text-align: right;">
-                        <button onclick="window.location.href='thank_you.html'" class="tooltip ae_button_level_2">Leave
+                        <button onclick="deleteImageCookie();window.location.href='thank_you.html'" class="tooltip ae_button_level_2">Leave
                             <span class="tooltiptext light_blue">Leave this page, cancel all tags of this image. Validated tags will be kept.</span>
                             <span style="padding-left:4px;">
                                 <img src="./images/ic_exit_to_app_black_48dp.png" style="vertical-align: bottom;" alt="" width="18" height="18"></span></button>

@@ -43,7 +43,7 @@ file_put_contents($file, "Before saving\n",FILE_APPEND | LOCK_EX);
 $xml->save($ANNOTATIONS_DIR);
 
 $response_array['status']  = 'success'; /* match error string in jquery if/else */
-$response_array['message'] = $id.".xml has been created.";   /* add custom message */
+$response_array['message'] = str_replace(strrchr($id, "."),"",$id).".xml has been created.";   /* add custom message */
 
 file_put_contents($file, "End of file validationTagsAndRegions" ,FILE_APPEND | LOCK_EX);
 file_put_contents($file, " " ,FILE_APPEND | LOCK_EX);
