@@ -40,7 +40,7 @@ class xmlVocReadAnnotationsFile
 
     public function addShape($tag, $xmin, $ymin, $xmax, $ymax, $difficult, $groupof)
     {
-        $bndbox = ['x'=>$xmin, 'y'=>$ymin, 'width'=>($xmax-$xmin), 'height'=>($ymax-$ymin)];
+        $bndbox = ['x'=>(int)$xmin, 'y'=>(int)$ymin, 'width'=>($xmax-$xmin), 'height'=>($ymax-$ymin)];
         $bndbox['tag'] = $tag;
         $bndbox['difficult'] = $difficult;
         $bndbox['groupof'] = $groupof;

@@ -22,6 +22,17 @@
         .selected{font-weight:bold; background: #ff99cc; color:#fff;}
     </style>
 <script>
+$(window).bind('beforeunload',function(e){
+    e.preventDefault();
+    // e.returnValue = '';
+    console.log(JSON.stringify(json_annotations));
+    tmpTagList = [];
+    validateTagsAndRegions(tmpTagList);
+    console.log(JSON.stringify(tmpTagList));
+    if(json_annotations != "" && JSON.stringify(json_annotations) != JSON.stringify(tmpTagList))
+        return false;
+})
+
 var selection_xy = [];
 var tag_error_raised = false;
 var new_zone_created = false;
@@ -63,20 +74,83 @@ var lastLoadedWidth  = 0;
 var lastLoadedHeight = 0;
 var firstWidth = 0;
 
-function selectImage(item, ind)
+function selectImageCallback(item, ind)
 {
     $(item).siblings('li').removeClass('selected');
     $(item).addClass('selected');
     $('#image_id').text(list_of_images[ind].id);
      $('#image_to_process').selectAreas('reset');
-    json_annotations = list_of_images[ind].annotations;
+    // json_annotations = list_of_images[ind].annotations;??
+   
     image_info.url = list_of_images[ind].url;
     image_info.id = list_of_images[ind].id;
     image_info.year = list_of_images[ind].year;
     image_info.folder = list_of_images[ind].folder;
     selectedIndex = ind;
     setImageCookie(list_of_images[ind].id);
-    $('#image_to_process').attr("src", list_of_images[ind].url);
+    $.ajax({
+        type: 'POST',
+        url: 'inc/getImageAnnotations.php',
+        data: { img: image_info.id, flr: image_info.folder, yr:image_info.year},
+        dataType: "json",
+        success: function(resData)
+        {
+            json_annotations = resData;
+            $('#image_to_process').attr("src", image_info.url);
+        }
+    });
+}
+
+function selectImage(item, ind)
+{
+    tmpTagList = [];
+    if(validateTagsAndRegions(tmpTagList))
+    {
+        if(JSON.stringify(json_annotations) != JSON.stringify(tmpTagList)){
+            var toLoadNextImg = confirm("Some modifications on this image have not been saved. Are you sure to leave?")
+            if (toLoadNextImg==true)
+            {
+                selectImageCallback(item, ind);
+            }
+        }
+        else{
+            selectImageCallback(item, ind);
+        }
+    }
+}
+
+function focusPrevOrNextAnnotation(isNext = true)
+{
+    var areas = $('#image_to_process').selectAreas('areas');
+
+    if(isNext)
+    {
+        current_visible_area_id++;
+        if (current_visible_area_id >= areas.length)
+        {
+            current_visible_area_id = 0;
+        }
+    }
+    else
+    {
+        current_visible_area_id--;
+        if (current_visible_area_id < 0)
+        {
+            current_visible_area_id = areas.length - 1;
+        }
+    }
+
+    for (var i = 0; i < areas.length; i++)
+    {
+        if (i == current_visible_area_id)
+        {
+            $('#image_to_process').selectAreas('setVisibility',  areas[i].id, 1);
+        }
+        else
+        {
+            $('#image_to_process').selectAreas('setVisibility',  areas[i].id, 0);
+        }
+    }
 }
 
 $(document).ready(function ()
@@ -345,7 +419,7 @@ $(document).ready(function ()
     });
     $('#validate_button').click(function(e) {
         // Sets a random selection
-        validateTagsAndRegions();
+        saveAnnotation();
     });
     $('#all_annotations_button').click(function(e) {
         // Show all annotations
@@ -370,36 +444,7 @@ $(document).ready(function ()
     });
 
     $('#one_annotation_button').click(function(e) {
-
-        // Hide annotations
-        var areas = $('#image_to_process').selectAreas('areas');
-        current_visible_area_id++;
-
-        /*if (areas.length==0)
-        {
-            $('#one_annotation_button').button( "option", "label", "");
-        }*/
-
-        if (current_visible_area_id+1 > areas.length)
-        {
-            current_visible_area_id = 0;
-        }
-
-        for (var i = 0; i < areas.length; i++)
-        {
-            // alert("i " + i);
-            // alert("current_visible_area_id " + current_visible_area_id);
-
-            if (i == current_visible_area_id)
-            {
-                $('#image_to_process').selectAreas('setVisibility',  areas[i].id, 1);
-                // $('#one_annotation_button').button( "option", "label", "areas[i].tag");
-            }
-            else
-            {
-                $('#image_to_process').selectAreas('setVisibility',  areas[i].id, 0);
-            }
-        }
+        focusPrevOrNextAnnotation(true);
     });
 
     $("#tag_input").focus(function() {
@@ -432,6 +477,32 @@ $(document).ready(function ()
 
     init_finished = true;
 })
+
+//监听键盘事件(快捷键)
+$(document).keydown(function(event){
+    if(event.keyCode == 38)
+    {
+        selectImage($("#imgids").children(".selected").prev(), selectedIndex - 1);
+        $("#imageIdChoices").scrollTop(22 * selectedIndex);
+    }
+    if (event.keyCode == 40)
+    {
+        selectImage($("#imgids").children(".selected").next(), selectedIndex + 1);
+        $("#imageIdChoices").scrollTop(22 * selectedIndex);
+　　 }
+    if(event.keyCode == 37)
+    {
+        focusPrevOrNextAnnotation(false);
+    }
+    if(event.keyCode == 39)
+    {
+        focusPrevOrNextAnnotation(true);
+    }
+    if(81 == event.keyCode && event.ctrlKey)
+    {
+        saveAnnotation();
+    }
+});
 
 function setValidInputTag(_tag)
 {
@@ -650,7 +721,10 @@ function setTagAndRegion()
     // Just change the tag, get area, id, ...
     $('#image_to_process').selectAreas('setTag', current_area.id, region_tag);
     setStatus("Tag has been set.");
-
+    // if($("#tag_input").val().trim() == 'black')
+    // {
+    //     $('#image_to_process').selectAreas('setVisibility', current_area.id, 0);
+    // }
     // Selection another box
     new_zone_created = true	;
 
@@ -660,41 +734,34 @@ function setTagAndRegion()
     return true;
 }
 
-function validateTagsAndRegions()
+function validateTagsAndRegions(tmpTagList)
 {
     // Process the list of tags
     var areas = $('#image_to_process').selectAreas('areas');
 
-    // if (areas.length == 0)
-    // {
-    //     setStatusAndColor("Create at least one region with a tag before submitting.", RED_COLOR);
-    //     return false;
-    // }
-
     index_tag = 0;
     ratioX = lastLoadedWidth/$('#image_to_process').width();
     ratioY = lastLoadedHeight/$('#image_to_process').height();
-    tmp_annotations = [];
 
     var error_occurs = false;
     $.each(areas, function (id, area) {
-        var tag_info = {tag:"",x:0,y:0,width:0,height:0, difficult:0, groupof:0};
+        var tag_info = {x:0,y:0,width:0,height:0, tag:"",difficult:0, groupof:0};
         tagSerial = area.tag.split(",");
         tag_info.tag = tagSerial[0];
-        tag_info.x = area.x * ratioX;
-        tag_info.y = area.y * ratioY;
-        tag_info.width = area.width * ratioX;
-        tag_info.height = area.height * ratioY;
+        tag_info.x = Math.round(area.x * ratioX);
+        tag_info.y = Math.round(area.y * ratioY);
+        tag_info.width = Math.round(area.width * ratioX);
+        tag_info.height = Math.round(area.height * ratioY);
         if(tagSerial[1] == "easy")
-            tag_info.difficult = 0;
+            tag_info.difficult = "0";
         else
-            tag_info.difficult = 1;
+            tag_info.difficult = "1";
         if(tagSerial[2] == "nogroup")
-            tag_info.groupof = 0;
+            tag_info.groupof = "0";
         else
-            tag_info.groupof = 1;
+            tag_info.groupof = "1";
         // To be checked
-        tmp_annotations.push(tag_info);
+        tmpTagList.push(tag_info);
         // image_info.annotations[index_tag] = tag_info;
         index_tag = index_tag + 1;
 
@@ -713,12 +780,19 @@ function validateTagsAndRegions()
         }
 
     });
-
     if (error_occurs) return false;
+    return true;
+}
 
-    // image_info.annotations = JSON.stringify(tmp_annotations);
-    list_of_images[selectedIndex].annotations = tmp_annotations
-    image_info.annotations = tmp_annotations;
+function saveAnnotation()
+{
+    tmpTagList=[];
+    if(!validateTagsAndRegions(tmpTagList))
+        return false;
+
+    //image_info.annotations = JSON.stringify(tmp_annotations);
+    //list_of_images[selectedIndex].annotations = tmp_annotations;
+    image_info.annotations = tmpTagList;
     //alert(image_info.annotations);
     console.log("INFO: annotations : " + image_info.annotations);
     console.log("INFO: annotations : " + JSON.stringify(image_info));
@@ -748,13 +822,14 @@ function validateTagsAndRegions()
             //     height: 0,
             //     annotations: [],
             // };
-
+            json_annotations = tmpTagList;
         },
         error : function(data, status, error)
         {
             setStatusAndColor("Unable to send data, please retry or check your connection.", RED_COLOR)
         }
     });
+    return true;
 }
 
 function getCookie(cname)
@@ -859,12 +934,14 @@ function loadImage(imageIndex = 0)
         }
     });
 }
+
 function sortById(x, y)
 {
     idxAb = x.id.substring(0,x.id.indexOf("."));
     idyAb = y.id.substring(0,y.id.indexOf("."));
     return parseInt(idxAb) - parseInt(idyAb);
 }
+
 function getAllInfo()
 {
     imageIndex = 0;
@@ -874,14 +951,14 @@ function getAllInfo()
     {
         image = imageName;
     }
-    selectedIndex = imageIndex;
-    var dataString = JSON.stringify(user_id);
+ 
+    //var dataString = JSON.stringify(user_id);
     console.log("INFO: " + "getAllInfo() from php");
 
     $.ajax({
         type: 'POST',
         url: 'inc/getAllInfo.php',
-        data: {user_id: dataString},
+        //data: {user_id: dataString},
         dataType: "json",
         success: function(resD)
         {
@@ -893,7 +970,8 @@ function getAllInfo()
                 {
                     if(element.id==image)
                     {
-                        imageIndex=index;
+                        imageIndex = index;
+                        selectedIndex = index;
                         flag=true;
                         return false;
                     }
@@ -906,9 +984,9 @@ function getAllInfo()
             image_info.folder = list_of_images[imageIndex].folder;
             image_info.id = list_of_images[imageIndex].id;
             image_id = list_of_images[imageIndex].id;
-            json_annotations = list_of_images[imageIndex].annotations;
+            // json_annotations = list_of_images[imageIndex].annotations;
             $('#image_id').text(image_id);
-            $('#image_to_process').attr("src", image_info.url);
+            
             var imageidlist = "<ul id=\"imgids\">";
             list_of_images.forEach(function(element, ind) {
                 if(ind == imageIndex)
@@ -918,6 +996,17 @@ function getAllInfo()
             });
             $("#imageIdChoices").html(imageidlist + '</ul>');
             $("#imageIdChoices").scrollTop(22*imageIndex);
+            $.ajax({
+                type: 'POST',
+                url: 'inc/getImageAnnotations.php',
+                data: { img: image_info.id, flr: image_info.folder, yr:image_info.year},
+                dataType: "json",
+                success: function(resData)
+                {
+                    json_annotations = resData;
+                    $('#image_to_process').attr("src", image_info.url);
+                }
+            });
         }
     });
 }

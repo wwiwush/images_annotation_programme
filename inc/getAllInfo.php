@@ -31,7 +31,7 @@ $annotated_image_index = 0;
 $not_annotated_image_index = 0;
 
 $file = 'file.log';
-file_put_contents($file, "INFO - Start the loop\n");
+file_put_contents($file, "INFO - allInfo Start the loop\n");
 $it = new RecursiveDirectoryIterator($IMAGES_DIR);
 foreach(new RecursiveIteratorIterator($it) as $file)
 {
@@ -53,38 +53,37 @@ foreach(new RecursiveIteratorIterator($it) as $file)
             $id = str_replace(array(".jpg",".JPG"),".jpg", $image_name);
             
             # Try to find the annotation
-            $xml_filename = str_replace(array(".jpg",".JPG"), ".xml", $id);
-            $xml_filepath = getXmlFile($ANNOTATIONS_DIR, $xml_filename);
-            $annotations = [];
-            if ($xml_filepath != null)
-            {
-                #echo "xml_filepath" . $xml_filepath;
-                $annotations = [];
-                $xml = new xmlVocReadAnnotationsFile($xml_filepath);
-                file_put_contents($file, "xml_filepath ".$xml_filepath."\n",FILE_APPEND | LOCK_EX);
+            // $xml_filename = str_replace(array(".jpg",".JPG"), ".xml", $id);
+            // $xml_filepath = getXmlFile($ANNOTATIONS_DIR, $xml_filename);
+            // $annotations = [];
+            // if ($xml_filepath != null)
+            // {
+            //     #echo "xml_filepath" . $xml_filepath;
+            //     $annotations = [];
+            //     $xml = new xmlVocReadAnnotationsFile($xml_filepath);
+            //     file_put_contents($file, "xml_filepath ".$xml_filepath."\n",FILE_APPEND | LOCK_EX);
 
-                if (!$xml->hasError())
-                {
-                    file_put_contents($file, "Parse XML\n",FILE_APPEND | LOCK_EX);
-                    $xml->parseXML();
-                    if (!$xml->hasError())
-                    {
-                        $annotations = $xml->getAnnotations();
-                        file_put_contents($file, "Annotations ".serialize($annotations)."\n",FILE_APPEND | LOCK_EX);
-                    }
-                }
-                else
-                {
-                    file_put_contents($file, "An error occurs\n",FILE_APPEND | LOCK_EX);
-                }
-            }
-            else
-            {
-                file_put_contents($file, "No annotations found.\n",FILE_APPEND | LOCK_EX); 
-            }
+            //     if (!$xml->hasError())
+            //     {
+            //         file_put_contents($file, "Parse XML\n",FILE_APPEND | LOCK_EX);
+            //         $xml->parseXML();
+            //         if (!$xml->hasError())
+            //         {
+            //             $annotations = $xml->getAnnotations();
+            //             file_put_contents($file, "Annotations ".serialize($annotations)."\n",FILE_APPEND | LOCK_EX);
+            //         }
+            //     }
+            //     else
+            //     {
+            //         file_put_contents($file, "An error occurs\n",FILE_APPEND | LOCK_EX);
+            //     }
+            // }
+            // else
+            // {
+            //     file_put_contents($file, "No annotations found.\n",FILE_APPEND | LOCK_EX); 
+            // }
 
-            $image_info = array("year" => $year, "folder" => $folder, "url" => $url, 
-            "annotations" => $annotations, "id" => $id);
+            $image_info = array("year" => $year, "folder" => $folder, "url" => $url, "id" => $id);
 
             # Add the image in the list
             $list_of_images[$image_index] = $image_info;

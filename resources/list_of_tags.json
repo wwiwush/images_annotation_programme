@@ -18,5 +18,6 @@
     {"name": "sheep", "icon": "resources/tag_examples/none.jpg"},
     {"name": "sofa", "icon": "resources/tag_examples/none.jpg"},
     {"name": "train", "icon": "resources/tag_examples/none.jpg"},
-    {"name": "tvmonitor", "icon": "resources/tag_examples/none.jpg"}
+    {"name": "tvmonitor", "icon": "resources/tag_examples/none.jpg"},
+    {"name": "black", "icon": "resources/tag_examples/none.jpg"}
 ]
