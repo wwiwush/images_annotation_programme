@@ -480,21 +480,21 @@ $(document).ready(function ()
 
 //监听键盘事件(快捷键)
 $(document).keydown(function(event){
-    if(event.keyCode == 38)
+    if(event.keyCode == 65)
     {
         selectImage($("#imgids").children(".selected").prev(), selectedIndex - 1);
         $("#imageIdChoices").scrollTop(22 * selectedIndex);
     }
-    if (event.keyCode == 40)
+    if (event.keyCode == 68)
     {
         selectImage($("#imgids").children(".selected").next(), selectedIndex + 1);
         $("#imageIdChoices").scrollTop(22 * selectedIndex);
 　　 }
-    if(event.keyCode == 37)
+    if(event.keyCode == 66)
     {
         focusPrevOrNextAnnotation(false);
     }
-    if(event.keyCode == 39)
+    if(event.keyCode == 70)
     {
         focusPrevOrNextAnnotation(true);
     }
@@ -1110,7 +1110,7 @@ function getAllInfo()
                     <div style="OVERFLOW-Y: scroll; OVERFLOW-X:hidden; width: 450px; height: 270px" id="imageIdChoices">
                     </div>
                     <div style="padding-top:24px;box-sizing: border-box;width=100%;text-align: right;">
-                        <button id="validate_button" class="tooltip ae_button_level_1">Save Annotation
+                        <button id="validate_button" class="tooltip ae_button_level_1">Save Annotations
                             <span class="tooltiptext light_green">Validate all the tags added to this image and go to the next image.</span>
                             <span style="padding-left:4px;">
                                 <img src="./images/ic_navigate_next_black_48dp.png" style="vertical-align: bottom;" alt="" width="18" height="18">
@@ -1133,6 +1133,15 @@ function getAllInfo()
 
                     <div style="padding-top: 12px" class="ae_small_80">
                         <span id="message" class="blue_color_text" style="float:right;"></span>
+                    </div>
+                    <div style="padding-top: 9px" >
+                        <ul id="tipsForShortcut" style="float:right;">Tips for keyboard shortcuts:
+                            <li >Previous image: "a"</li>
+                            <li >Next image: "d"</li>
+                            <li >Previous annotation: "b"</li>
+                            <li >Next annotation: "f"</li>
+                            <li >Save annotations: "ctrl+q"</li>
+                        </ul>
                     </div>
             </td>
             <td id="col4" style="background-color:#fff">&nbsp;</td>

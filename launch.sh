@@ -17,6 +17,13 @@ if [ $? -ne 0 ]; then
     echo "Will install php-xml"
     apt update && apt install php7.2-xml -y
 fi
-apt install php7.2-gd -y
+
+#check php-gd installation
+dpkg -s php-gd &> /dev/null
+if [ $? -ne 0 ]; then
+    echo "Will install php-gd"
+    apt update && apt install php7.2-gd -y
+fi
+
 PORT=$1
 php -S 0.0.0.0:$PORT
