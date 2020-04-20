@@ -96,7 +96,7 @@ function selectImageCallback(item, ind)
         success: function(resData)
         {
             json_annotations = resData;
-            $('#image_to_process').attr("src", image_info.url);
+            $('#image_to_process').attr("src", image_info.url + '?' + Math.random());
         }
     });
 }
