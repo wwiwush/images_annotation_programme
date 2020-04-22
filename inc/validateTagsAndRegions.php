@@ -63,7 +63,7 @@ $xml->save($ANNOTATIONS_DIR);
 
 $response_array['status']  = 'success'; /* match error string in jquery if/else */
 if($blackPatchAdded){
-    $response_array['message'] = $id. " and " .str_replace(strrchr($id, "."),"",$id).".xml has been created.";
+    $response_array['message'] = $id. " and " .str_replace(strrchr($id, "."),"",$id).".xml have been created.";
 }
 else{
     $response_array['message'] = str_replace(strrchr($id, "."),"",$id).".xml has been created.";
