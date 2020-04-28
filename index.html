@@ -155,6 +155,13 @@ function focusPrevOrNextAnnotation(isNext = true)
 
 $(document).ready(function ()
 {
+    $(window).resize(
+        function()
+        {
+            var divWidth = Math.round(document.body.clientWidth*0.3);
+            $('#imageIdChoices').css("width", divWidth+"px");
+        }
+    );
     $("input[name='difficult']").click(function()
     {
         bypassTagCheck=true;
@@ -421,6 +428,26 @@ $(document).ready(function ()
         // Sets a random selection
         saveAnnotation();
     });
+
+    $('#delete_button').click(function(e) {
+        var toDeleteImage = confirm("You are deleting the image and its annotations. Are you sure to continue?")
+        if (toDeleteImage == true)
+        {
+            $.ajax({
+            type: 'POST',
+            url: 'inc/delete.php',
+            data: {img: image_info.id}, 
+            dataType: "json",
+            success: function(resData)
+            {
+                var newInd = selectedIndex+1;
+                setImageCookie(list_of_images[newInd].id)//刷新cookie
+                window.location.reload();
+            }
+            });
+        }
+    });
+
     $('#all_annotations_button').click(function(e) {
         // Show all annotations
         current_visible_area_id = -1;
@@ -1010,7 +1037,6 @@ function getAllInfo()
         }
     });
 }
-
 </script>
 </head>
 
@@ -1109,9 +1135,15 @@ function getAllInfo()
                     </div>
                     <div style="OVERFLOW-Y: scroll; OVERFLOW-X:hidden; width: 450px; height: 270px" id="imageIdChoices">
                     </div>
-                    <div style="padding-top:24px;box-sizing: border-box;width=100%;text-align: right;">
+                    <div style="padding-top:24px;box-sizing: border-box;text-align: right;">
                         <button id="validate_button" class="tooltip ae_button_level_1">Save Annotations
                             <span class="tooltiptext light_green">Validate all the tags added to this image and go to the next image.</span>
+                            <span style="padding-left:4px;">
+                                <img src="./images/ic_navigate_next_black_48dp.png" style="vertical-align: bottom;" alt="" width="18" height="18">
+                            </span>
+                        </button>
+                        <button id="delete_button" class="tooltip ae_button_level_1">Delete Image
+                            <span class="tooltiptext light_green">Delete the image and its annotations.</span>
                             <span style="padding-left:4px;">
                                 <img src="./images/ic_navigate_next_black_48dp.png" style="vertical-align: bottom;" alt="" width="18" height="18">
                             </span>
@@ -1124,7 +1156,7 @@ function getAllInfo()
                                 <img src="./images/ic_replay_black_48dp.png" style="vertical-align: bottom;" alt="" width="18" height="18"></span></button>
                     </div> -->
 
-                    <div style="padding-top:24px;box-sizing: border-box;width=100%;text-align: right;">
+                    <div style="padding-top:24px;box-sizing: border-box;text-align: right;">
                         <button onclick="deleteImageCookie();window.location.href='thank_you.html'" class="tooltip ae_button_level_2">Leave
                             <span class="tooltiptext light_blue">Leave this page, cancel all tags of this image. Validated tags will be kept.</span>
                             <span style="padding-left:4px;">
